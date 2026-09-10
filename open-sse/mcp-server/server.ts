@@ -78,6 +78,7 @@ import { gamificationTools } from "./tools/gamificationTools.ts";
 import { notionTools } from "./tools/notionTools.ts";
 import { obsidianTools } from "./tools/obsidianTools.ts";
 import { localCorpusTools } from "./tools/localCorpusTools.ts";
+import { notebooklmTools } from "./tools/notebooklmTools.ts";
 import { compressMcpRegistryMetadata } from "./descriptionCompressor.ts";
 import { reduceToolManifest, readMcpToolProfileFromEnv } from "./toolCardinality.ts";
 import { smartFilterText } from "../services/compression/engines/mcpAccessibility/index.ts";
@@ -114,6 +115,7 @@ const TOTAL_MCP_TOOL_COUNT = countUniqueMcpTools({
   obsidianTools,
   localCorpusTools,
   compressionTools,
+  notebooklmTools,
 });
 
 type JsonRecord = Record<string, unknown>;
@@ -685,6 +687,7 @@ export function createMcpServer(): McpServer {
     ...obsidianTools.map((t) => t.name),
     ...notionTools.map((t) => t.name),
     ...localCorpusTools.map((t) => t.name),
+    ...notebooklmTools.map((t) => t.name),
   ]);
 
   server.registerTool(
@@ -1228,6 +1231,33 @@ export function createMcpServer(): McpServer {
 
   // ── Notion Context Source Tools ───────────────
   notionTools.forEach((toolDef) => {
+    server.registerTool(
+      toolDef.name,
+      {
+        description: toolDef.description,
+        // @ts-ignore: dynamic zod access
+        inputSchema: toolDef.inputSchema,
+      },
+      withScopeEnforcement(
+        toolDef.name,
+        async (args, extra) => {
+          try {
+            const parsedArgs = toolDef.inputSchema.parse(args ?? {});
+            // @ts-ignore: handler expected specific object
+            const result = await toolDef.handler(parsedArgs, extra);
+            return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
+          }
+        },
+        toolDef.scopes
+      )
+    );
+  });
+
+  // ── NotebookLM Tools ──────────────────────────
+  notebooklmTools.forEach((toolDef) => {
     server.registerTool(
       toolDef.name,
       {

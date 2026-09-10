@@ -260,4 +260,17 @@ export const OAUTH_PROVIDERS = {
     authHint:
       "Tencent CodeBuddy CN (copilot.tencent.com). Sign in via the official CLI device-code flow, or paste a direct API key (sent as Authorization: Bearer). Catalog: GLM / Kimi / MiniMax / DeepSeek / Hunyuan.",
   },
+  notebooklm: {
+    id: "notebooklm",
+    alias: "nblm",
+    name: "NotebookLM",
+    icon: "note",
+    color: "#4285F4",
+    textIcon: "NL",
+    website: "https://notebooklm.google.com",
+    subscriptionRisk: false,
+    riskNoticeVariant: "oauth",
+    authHint:
+      "Sign in with your Google account to access NotebookLM notebooks. Create, read, and interact with your AI-powered research documents.",
+  },
 };

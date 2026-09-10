@@ -501,6 +501,30 @@ export const ZED_HOSTED_CONFIG = {
   defaultNativeAppPort: 58443,
 };
 
+// NotebookLM OAuth Configuration (Google OAuth)
+// NotebookLM is a Google product that uses standard Google OAuth for authentication.
+// Supports both browser-based OAuth and personal access tokens.
+export const NOTEBOOKLM_CONFIG = {
+  clientId: process.env.NOTEBOOKLM_OAUTH_CLIENT_ID || resolvePublicCred("notebooklm_id", "NOTEBOOKLM_OAUTH_CLIENT_ID"),
+  clientSecret: process.env.NOTEBOOKLM_OAUTH_CLIENT_SECRET || resolvePublicCred("notebooklm_secret", "NOTEBOOKLM_OAUTH_CLIENT_SECRET"),
+  authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+  tokenUrl: "https://oauth2.googleapis.com/token",
+  userInfoUrl: "https://www.googleapis.com/oauth2/v1/userinfo",
+  scopes: [
+    "https://www.googleapis.com/auth/notebooklm.notebooks",
+    "https://www.googleapis.com/auth/notebooklm.notebooks.read",
+    "https://www.googleapis.com/auth/notebooklm.notebooks.update",
+    "https://www.googleapis.com/auth/notebooklm.notebooks.create",
+    "https://www.googleapis.com/auth/notebooklm.notebooks.delete",
+    "https://www.googleapis.com/auth/notebooklm.notebooks.chat",
+    "openid",
+    "email",
+    "profile",
+  ],
+  codeChallengeMethod: "S256",
+  apiBaseUrl: "https://notebooklm.google.com/api",
+};
+
 // OAuth timeout (5 minutes)
 export const OAUTH_TIMEOUT = 300000;
 
@@ -531,4 +555,5 @@ export const PROVIDERS = {
   XAI_OAUTH: "xai-oauth",
   ZED: "zed",
   ZED_HOSTED: "zed-hosted",
+  NOTEBOOKLM: "notebooklm",
 };
