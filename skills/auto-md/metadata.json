@@ -1,0 +1,60 @@
+{
+  "id": "auto-md",
+  "name": "auto-md",
+  "description": "Automatically convert documents to markdown using MarkItDown MCP server",
+  "version": "1.0.0",
+  "category": "document-processing",
+  "tags": ["markdown", "conversion", "documents", "mcp", "automation"],
+  "triggers": [
+    "convert document to markdown",
+    "md convert",
+    "/md",
+    "document conversion",
+    "pdf to markdown",
+    "word to markdown"
+  ],
+  "commands": [
+    {
+      "name": "convert",
+      "description": "Convert a document file or web page to markdown",
+      "usage": "/md convert <file-or-url> [output-dir]",
+      "aliases": ["convert", "to-markdown"]
+    },
+    {
+      "name": "setup",
+      "description": "Set up system dependencies and Python packages",
+      "usage": "/md setup [--python-only]",
+      "aliases": ["install", "init"]
+    },
+    {
+      "name": "status",
+      "description": "Check if all required dependencies are installed",
+      "usage": "/md status",
+      "aliases": ["check", "verify"]
+    }
+  ],
+  "dependencies": {
+    "system": ["pandoc", "poppler-utils"],
+    "python": ["markitdown-mcp>=0.0.1a4"],
+    "scripts": ["scripts/to-md.sh", "hooks/auto-md.sh"],
+    "mcp": ["markitdown-mcp"]
+  },
+  "platforms": ["macos", "linux", "docker"],
+  "requirements": {
+    "os": ["macOS", "Ubuntu", "Debian", "Alpine"],
+    "python": ">=3.7",
+    "node": ">=22.0.0"
+  },
+  "documentation": "SKILL.md",
+  "repository": "https://github.com/diegosouzapw/OmniRoute",
+  "author": "OmniRoute Contributors",
+  "license": "MIT",
+  "changelog": {
+    "1.0.0": [
+      "Initial release",
+      "Document-to-markdown conversion support",
+      "Git hook integration for automatic conversion",
+      "Multi-format support (PDF, DOCX, PPTX, XLSX, web pages, images)"
+    ]
+  }
+}
