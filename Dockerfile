@@ -130,6 +130,13 @@ LABEL org.opencontainers.image.title="omniroute" \
   org.opencontainers.image.source="https://github.com/diegosouzapw/OmniRoute" \
   org.opencontainers.image.licenses="MIT"
 
+# Install pandoc and poppler for MarkItDown MCP server document conversion support
+RUN --mount=type=cache,id=apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=apt-lists,target=/var/lib/apt/lists,sharing=locked \
+  apt-get update \
+  && apt-get install -y --no-install-recommends pandoc poppler-utils \
+  && rm -rf /var/lib/apt/lists/*
+
 ENV NODE_ENV=production
 ENV PORT=20128
 ENV HOSTNAME=0.0.0.0
