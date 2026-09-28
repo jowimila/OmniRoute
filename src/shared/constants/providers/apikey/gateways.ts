@@ -808,4 +808,17 @@ export const APIKEY_PROVIDERS_GATEWAYS = {
     apiHint:
       "OpenAI-compatible endpoint at https://router.bynara.id/v1. Free-tier models are pinned; others need credit.",
   },
+  gonka: {
+    id: "gonka",
+    alias: "gonka",
+    name: "GonkaRouter",
+    icon: "hub",
+    color: "#1E40AF",
+    textIcon: "GR",
+    passthroughModels: true,
+    website: "https://www.gonkarouter.io",
+    authHint: "Bearer API key for the GonkaRouter OpenAI-compatible gateway.",
+    apiHint:
+      "Create an API key at https://www.gonkarouter.io — OpenAI-compatible endpoint at https://api.gonkarouter.io/v1. Supports 290+ LLM models with auto-fallback routing.",
+  },
 };
