@@ -212,6 +212,8 @@ scripts/i18n/_pending-keys.json
 !.claude/skills/
 !.claude/skills/arena/
 !.claude/skills/arena/**
+# Arena skill run state (hundreds of per-agent files; never commit)
+.arena/
 
 # PR Reviews and local feedback files
 pr_reviews*.json
