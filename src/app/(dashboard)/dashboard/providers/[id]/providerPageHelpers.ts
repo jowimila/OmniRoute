@@ -220,6 +220,7 @@ export const CONFIGURABLE_BASE_URL_PROVIDERS = new Set([
   "xiaomi-mimo",
   "siliconflow",
   "heroku",
+  "cerebrium",
   "databricks",
   "snowflake",
   "searxng-search",
@@ -322,6 +323,8 @@ export function getProviderBaseUrlHint(
       return t ? t("xiaomiMimoBaseUrlHint") : undefined;
     case "heroku":
       return t ? t("herokuBaseUrlHint") : undefined;
+    case "cerebrium":
+      return t ? t("cerebriumBaseUrlHint") : undefined;
     case "databricks":
       return t ? t("databricksBaseUrlHint") : undefined;
     case "snowflake":
@@ -348,6 +351,8 @@ export function getProviderBaseUrlPlaceholder(providerId?: string | null) {
       return "https://api.siliconflow.cn/v1";
     case "heroku":
       return "https://us.inference.heroku.com";
+    case "cerebrium":
+      return "https://api.cerebrium.ai/v4/p-xxxxxxxx/my-app/run";
     case "databricks":
       return "https://adb-1234567890123456.7.azuredatabricks.net/serving-endpoints";
     case "snowflake":
