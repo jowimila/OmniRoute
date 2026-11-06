@@ -208,7 +208,10 @@ scripts/i18n/_pending-keys.json
 # AI agent local settings and configs
 .agents/
 .antigravitycli/
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/skills/arena/
+!.claude/skills/arena/**
 
 # PR Reviews and local feedback files
 pr_reviews*.json
