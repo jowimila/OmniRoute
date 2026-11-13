@@ -3,14 +3,24 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { THEME_CONFIG } from "@/shared/constants/appConfig";
+import {
+  DEFAULT_QURAN_FONT,
+  DEFAULT_UI_FONT,
+  buildQuranFontStack,
+  buildUiFontStack,
+} from "@/shared/constants/arabicFonts";
 
 interface ThemeState {
   theme: string;
   colorTheme: string;
   customColor: string;
+  uiFont: string;
+  quranFont: string;
   setTheme: (theme: string) => void;
   setColorTheme: (colorTheme: string) => void;
   setCustomColorTheme: (color: string) => void;
+  setUiFont: (fontId: string) => void;
+  setQuranFont: (fontId: string) => void;
   toggleTheme: () => void;
   initTheme: () => void;
 }
@@ -21,6 +31,8 @@ const useThemeStore = create<ThemeState>()(
       theme: THEME_CONFIG.defaultTheme,
       colorTheme: "coral",
       customColor: "#3b82f6",
+      uiFont: DEFAULT_UI_FONT,
+      quranFont: DEFAULT_QURAN_FONT,
 
       setTheme: (theme) => {
         set({ theme });
@@ -38,6 +50,16 @@ const useThemeStore = create<ThemeState>()(
         applyColorTheme("custom", normalized);
       },
 
+      setUiFont: (uiFont) => {
+        set({ uiFont });
+        applyUiFont(uiFont);
+      },
+
+      setQuranFont: (quranFont) => {
+        set({ quranFont });
+        applyQuranFont(quranFont);
+      },
+
       toggleTheme: () => {
         const currentTheme = get().theme;
         const newTheme = currentTheme === "dark" ? "light" : "dark";
@@ -46,9 +68,11 @@ const useThemeStore = create<ThemeState>()(
       },
 
       initTheme: () => {
-        const { theme, colorTheme, customColor } = get();
+        const { theme, colorTheme, customColor, uiFont, quranFont } = get();
         applyTheme(theme);
         applyColorTheme(colorTheme, customColor);
+        applyUiFont(uiFont);
+        applyQuranFont(quranFont);
       },
     }),
     {
@@ -94,6 +118,26 @@ function applyColorTheme(colorTheme: string, customColor: string) {
 
   root.style.setProperty("--color-primary", baseColor);
   root.style.setProperty("--color-primary-hover", hoverColor);
+}
+
+const FALLBACK_SANS = "system-ui, sans-serif";
+
+function applyUiFont(fontId: string) {
+  if (typeof window === "undefined") return;
+
+  const root = document.documentElement;
+  const base = getComputedStyle(root).getPropertyValue("--font-sans").trim() || FALLBACK_SANS;
+  const stack = buildUiFontStack(fontId, base);
+  if (stack) {
+    root.style.setProperty("--font-ui-override", stack);
+  } else {
+    root.style.removeProperty("--font-ui-override");
+  }
+}
+
+function applyQuranFont(fontId: string) {
+  if (typeof window === "undefined") return;
+  document.documentElement.style.setProperty("--font-quran", buildQuranFontStack(fontId));
 }
 
 function normalizeHexColor(color: string) {
