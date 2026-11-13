@@ -8,6 +8,37 @@
    The bundled @font-face uses family "Material Symbols Outlined", matching the
    .material-symbols-outlined rule defined later in this file. */
 @import "material-symbols/outlined.css";
+/* Self-hosted Arabic UI + Quran fonts. Only the Arabic subset is imported;
+   browsers download a file only when its family is actually used. */
+@import "@fontsource/cairo/arabic-400.css";
+@import "@fontsource/cairo/arabic-500.css";
+@import "@fontsource/cairo/arabic-700.css";
+@import "@fontsource/tajawal/arabic-400.css";
+@import "@fontsource/tajawal/arabic-500.css";
+@import "@fontsource/tajawal/arabic-700.css";
+@import "@fontsource/almarai/arabic-400.css";
+@import "@fontsource/almarai/arabic-700.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-500.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
+@import "@fontsource/noto-kufi-arabic/arabic-400.css";
+@import "@fontsource/noto-kufi-arabic/arabic-500.css";
+@import "@fontsource/noto-kufi-arabic/arabic-700.css";
+@import "@fontsource/reem-kufi/arabic-400.css";
+@import "@fontsource/reem-kufi/arabic-500.css";
+@import "@fontsource/reem-kufi/arabic-700.css";
+@import "@fontsource/noto-naskh-arabic/arabic-400.css";
+@import "@fontsource/noto-naskh-arabic/arabic-500.css";
+@import "@fontsource/noto-naskh-arabic/arabic-700.css";
+@import "@fontsource/amiri/arabic-400.css";
+@import "@fontsource/amiri/arabic-700.css";
+@import "@fontsource/lateef/arabic-400.css";
+@import "@fontsource/lateef/arabic-500.css";
+@import "@fontsource/lateef/arabic-700.css";
+@import "@fontsource/scheherazade-new/arabic-400.css";
+@import "@fontsource/scheherazade-new/arabic-500.css";
+@import "@fontsource/scheherazade-new/arabic-700.css";
+@import "@fontsource/amiri-quran/arabic-400.css";
 @source "../../node_modules/fumadocs-ui/css/generated/*.css";
 
 /* Tailwind v4 auto-detection cannot scan directories with parentheses
@@ -252,7 +283,7 @@
 body {
   background-color: var(--color-bg);
   color: var(--color-text-main);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui-override, var(--font-sans));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -503,4 +534,18 @@ select option {
   .dashboard-sidebar-desktop {
     display: flex;
   }
+}
+
+/* Quran text: use with className="font-quran" or the [data-quran] attribute.
+   --font-quran is set at runtime from the Appearance settings. Generous line
+   height keeps tashkeel (vowel marks) from colliding; letter-spacing must stay
+   normal or Arabic letters disconnect. */
+.font-quran,
+[data-quran] {
+  font-family: var(--font-quran, "Amiri Quran", "Scheherazade New", serif);
+  line-height: 2.2;
+  letter-spacing: normal;
+  word-spacing: 0.05em;
+  font-feature-settings: "liga", "calt", "mark", "mkmk";
+  text-rendering: optimizeLegibility;
 }

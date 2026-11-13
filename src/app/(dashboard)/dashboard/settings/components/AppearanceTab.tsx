@@ -13,11 +13,28 @@ import {
   type ComboConfigMode,
 } from "@/shared/constants/comboConfigMode";
 import { PIN_PROVIDER_QUOTA_TO_HOME_KEY } from "@/shared/constants/homeWidgets";
+import {
+  ARABIC_UI_FONTS,
+  ARABIC_UI_PREVIEW_TEXT,
+  DEFAULT_UI_FONT,
+  QURAN_FONTS,
+  QURAN_PREVIEW_TEXT,
+  type ArabicFontOption,
+} from "@/shared/constants/arabicFonts";
 import AccountEmailVisibilitySetting from "./AccountEmailVisibilitySetting";
 
 export default function AppearanceTab() {
   const { theme, setTheme, isDark } = useTheme();
-  const { colorTheme, customColor, setColorTheme, setCustomColorTheme } = useThemeStore();
+  const {
+    colorTheme,
+    customColor,
+    setColorTheme,
+    setCustomColorTheme,
+    uiFont,
+    quranFont,
+    setUiFont,
+    setQuranFont,
+  } = useThemeStore();
   const t = useTranslations("settings");
 
   const isElectron = useIsElectron();
@@ -185,6 +202,49 @@ export default function AppearanceTab() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="pt-4 border-t border-border">
+          <div className="mb-3">
+            <p className="font-medium">{getSettingsLabel("arabicFont", "Arabic interface font")}</p>
+            <p className="text-sm text-text-muted">
+              {getSettingsLabel(
+                "arabicFontDesc",
+                "Choose the font used for Arabic text across the dashboard. Fonts are bundled locally."
+              )}
+            </p>
+          </div>
+          <FontPicker
+            name="ui-font"
+            ariaLabel={getSettingsLabel("arabicFont", "Arabic interface font")}
+            value={uiFont}
+            onChange={setUiFont}
+            options={ARABIC_UI_FONTS}
+            previewText={ARABIC_UI_PREVIEW_TEXT}
+            defaultLabel={getSettingsLabel("fontDefault", "Default (system)")}
+            defaultValue={DEFAULT_UI_FONT}
+          />
+        </div>
+
+        <div className="pt-4 border-t border-border">
+          <div className="mb-3">
+            <p className="font-medium">{getSettingsLabel("quranFont", "Quran font")}</p>
+            <p className="text-sm text-text-muted">
+              {getSettingsLabel(
+                "quranFontDesc",
+                "Font for fully vowelled Quranic text (elements using the font-quran class)."
+              )}
+            </p>
+          </div>
+          <FontPicker
+            name="quran-font"
+            ariaLabel={getSettingsLabel("quranFont", "Quran font")}
+            value={quranFont}
+            onChange={setQuranFont}
+            options={QURAN_FONTS}
+            previewText={QURAN_PREVIEW_TEXT}
+            quran
+          />
         </div>
 
         <div className="pt-4 border-t border-border">
@@ -772,5 +832,80 @@ export default function AppearanceTab() {
         </div>
       </div>
     </Card>
+  );
+}
+
+interface FontPickerProps {
+  name: string;
+  ariaLabel: string;
+  value: string;
+  onChange: (id: string) => void;
+  options: readonly ArabicFontOption[];
+  previewText: string;
+  defaultLabel?: string;
+  defaultValue?: string;
+  quran?: boolean;
+}
+
+function FontPicker({
+  name,
+  ariaLabel,
+  value,
+  onChange,
+  options,
+  previewText,
+  defaultLabel,
+  defaultValue,
+  quran = false,
+}: FontPickerProps) {
+  const items = [
+    ...(defaultLabel && defaultValue
+      ? [{ id: defaultValue, family: "", labelAr: defaultLabel, labelEn: defaultLabel }]
+      : []),
+    ...options,
+  ];
+
+  return (
+    <div role="radiogroup" aria-label={ariaLabel} className="grid gap-2 sm:grid-cols-2">
+      {items.map((font) => {
+        const selected = value === font.id;
+        return (
+          <label
+            key={font.id}
+            className={cn(
+              "flex cursor-pointer flex-col gap-1 rounded-lg border px-4 py-3 transition-colors",
+              "focus-within:ring-2 focus-within:ring-primary/40",
+              selected
+                ? "border-primary bg-primary/5"
+                : "border-border bg-surface/40 hover:border-primary/40"
+            )}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={font.id}
+              checked={selected}
+              onChange={() => onChange(font.id)}
+              className="sr-only"
+            />
+            <span className="text-sm font-medium">
+              {font.labelAr === font.labelEn ? font.labelEn : `${font.labelAr} · ${font.labelEn}`}
+            </span>
+            <span
+              dir="rtl"
+              lang="ar"
+              className={quran ? "text-2xl" : "text-lg"}
+              style={{
+                fontFamily: font.family ? `"${font.family}", serif` : undefined,
+                lineHeight: quran ? 2.2 : 1.8,
+                letterSpacing: "normal",
+              }}
+            >
+              {previewText}
+            </span>
+          </label>
+        );
+      })}
+    </div>
   );
 }
