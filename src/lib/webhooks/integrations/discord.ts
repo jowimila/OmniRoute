@@ -20,6 +20,7 @@ const EVENT_COLORS: Partial<Record<WebhookEvent, number>> = {
   "provider.recovered": 0x22c55e,
   "quota.exceeded": 0xeab308,
   "combo.switched": 0x3b82f6,
+  "security.login_locked": 0xdc2626,
   "test.ping": 0x8b5cf6,
 };
 

@@ -208,7 +208,8 @@ function openSqliteDatabase(sqliteFile: string, options?: Record<string, unknown
 // Ensure data directory exists — with fallback for restricted home directories (#133)
 if (!isCloud && !fs.existsSync(DATA_DIR)) {
   try {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+    // 0o700: the data dir holds the SQLite DB with provider credentials; owner-only access.
+    fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.warn(

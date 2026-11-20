@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuditRequestContext, logAuditEvent } from "@/lib/compliance/index";
+import { notifyWebhookEvent } from "@/lib/webhookDispatcher";
 import { classifyIpScope } from "@/lib/ipUtils";
 import { getCachedSettings } from "@/lib/localDb";
 import { SignJWT } from "jose";
@@ -191,6 +192,12 @@ export async function POST(request) {
     });
 
     if (!failureDecision.allowed) {
+      // Alert operators once, on the failure that trips the lockout (not on every blocked retry).
+      notifyWebhookEvent("security.login_locked", {
+        ipAddress: clientIp,
+        retryAfterSeconds: failureDecision.retryAfterSeconds || 0,
+        sourceScope,
+      });
       return NextResponse.json(
         { error: "Too many failed attempts. Try again later." },
         {

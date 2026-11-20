@@ -94,7 +94,8 @@ export function resolveWritableDataDir({ isCloud = false }: { isCloud?: boolean 
   if (!configured) return resolved;
 
   try {
-    fs.mkdirSync(resolved, { recursive: true });
+    // 0o700: owner-only; the data dir holds the SQLite DB with provider credentials.
+    fs.mkdirSync(resolved, { recursive: true, mode: 0o700 });
     return resolved;
   } catch (err: unknown) {
     const code = (err as NodeJS.ErrnoException | null)?.code;
