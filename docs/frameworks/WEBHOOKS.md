@@ -20,15 +20,16 @@ keep failing.
 
 The `WebhookEvent` type (`src/lib/webhookDispatcher.ts`) currently models:
 
-| Event                | Fires when                                                |
-| -------------------- | --------------------------------------------------------- |
-| `request.completed`  | A proxied request completes successfully                  |
-| `request.failed`     | A proxied request fails after all retries/fallback        |
-| `provider.error`     | A provider returns an error eligible for circuit-breaking |
-| `provider.recovered` | A previously failing provider returns to a healthy state  |
-| `quota.exceeded`     | An API key crosses a budget/quota threshold               |
-| `combo.switched`     | A combo strategy switches its primary target              |
-| `test.ping`          | Synthetic event used by the test endpoint                 |
+| Event                   | Fires when                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| `request.completed`     | A proxied request completes successfully                                             |
+| `request.failed`        | A proxied request fails after all retries/fallback                                   |
+| `provider.error`        | A provider returns an error eligible for circuit-breaking                            |
+| `provider.recovered`    | A previously failing provider returns to a healthy state                             |
+| `quota.exceeded`        | An API key crosses a budget/quota threshold                                          |
+| `combo.switched`        | A combo strategy switches its primary target                                         |
+| `security.login_locked` | Repeated failed dashboard logins triggered the lockout (IP only, never the password) |
+| `test.ping`             | Synthetic event used by the test endpoint                                            |
 
 Subscriptions accept the literal `"*"` to receive every event. Unknown event
 names in `events` are ignored at dispatch time.

@@ -2,6 +2,7 @@ import { CORS_HEADERS, handleCorsOptions } from "@/shared/utils/cors";
 import { createFile, listFiles, formatFileResponse, countFiles } from "@/lib/localDb";
 import { NextResponse } from "next/server";
 import { getApiKeyRequestScope } from "@/app/api/v1/_helpers/apiKeyScope";
+import { checkUpload } from "@/lib/files/uploadPolicy";
 
 export async function OPTIONS() {
   return handleCorsOptions();
@@ -26,23 +27,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const MAX_FILE_BYTES = 512 * 1024 * 1024; // 512 MB
-    if (file.size > MAX_FILE_BYTES) {
-      return NextResponse.json(
-        {
-          error: {
-            message: "File exceeds maximum allowed size of 512 MB",
-            type: "invalid_request_error",
-          },
-        },
-        { status: 400, headers: CORS_HEADERS }
-      );
-    }
-
     const bytes = file.size;
     const filename = file.name;
     const mimeType = file.type;
+
+    // Reject oversized uploads before buffering them into memory.
+    const sizeCheck = checkUpload({ filename, mimeType, size: bytes, head: new Uint8Array(0) });
+    if (!sizeCheck.ok && sizeCheck.status === 413) {
+      return NextResponse.json(
+        { error: { message: sizeCheck.message, type: "invalid_request_error" } },
+        { status: 413, headers: CORS_HEADERS }
+      );
+    }
+
     const content = Buffer.from(await file.arrayBuffer());
+
+    const check = checkUpload({ filename, mimeType, size: bytes, head: content.subarray(0, 512) });
+    if (!check.ok) {
+      return NextResponse.json(
+        { error: { message: check.message, type: "invalid_request_error" } },
+        { status: check.status, headers: CORS_HEADERS }
+      );
+    }
 
     let expiresAt: number | undefined;
     if (expiresAfterAnchor === "created_at" && expiresAfterSeconds) {

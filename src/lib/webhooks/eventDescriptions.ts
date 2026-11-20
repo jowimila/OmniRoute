@@ -5,6 +5,7 @@ export type WebhookEvent =
   | "provider.recovered"
   | "quota.exceeded"
   | "combo.switched"
+  | "security.login_locked"
   | "test.ping";
 
 export interface EventDescription {
@@ -66,6 +67,13 @@ export const EVENT_DESCRIPTIONS: Record<WebhookEvent, EventDescription> = {
       toModel: "claude-opus-4-7",
       reason: "provider.error",
     },
+  },
+  "security.login_locked": {
+    label: "Login Locked",
+    emoji: "🔒",
+    description:
+      "Repeated failed dashboard logins from one IP triggered the brute-force lockout. The payload never contains the attempted password.",
+    exampleData: { ipAddress: "203.0.113.7", retryAfterSeconds: 900, sourceScope: "public" },
   },
   "test.ping": {
     label: "Test Ping",
